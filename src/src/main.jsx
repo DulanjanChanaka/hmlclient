@@ -50,76 +50,38 @@ const HomeComponent = () => {
   }, []);
 
   // send cart data
-  // const sendCartData = () => {
-  //   const filterProducts = products.filter((val) => val.checked === true);
+  const sendCartData = () => {
+    const filterProducts = products.filter((val) => val.checked === true);
 
-  //   if (!cartData.name) {
-  //     setCartData((pre) => {
-  //       const temp = { ...pre, name: username };
-  //       return temp;
-  //     });
-  //   }
-
-  //   if (!cartData.shops) {
-  //     setCartData((pre) => {
-  //       const temp = { ...pre };
-  //       temp.shops = [
-  //         {
-  //           shopID: selectedShop,
-  //           orderList: filterProducts,
-  //         },
-  //       ];
-  //       return temp;
-  //     });
-  //   } else {
-  //     setCartData((pre) => {
-  //       const temp = { ...pre };
-  //       temp.shops.push({
-  //         shopID: selectedShop,
-  //         orderList: filterProducts,
-  //       });
-  //       return temp;
-  //     });
-  //   }
-  // };
-
-
-  const sendCartData = async () => {
-    try {
-      const filterProducts = products.filter((val) => val.quantity > 0);
-  
-      const quantities = filterProducts.map(({ _id,code, quantity }) => ({ productId: _id,code, quantity }));
-  
-      const requestBody = {
-        code: selectedShop,
-        description: username,
-        quantity: quantities
-      };
-  
-      console.log(requestBody);
-  
-      const response = await fetch("https://caltexserver.netlify.app/api/orders", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(requestBody),
+    if (!cartData.name) {
+      setCartData((pre) => {
+        const temp = { ...pre, name: username };
+        return temp;
       });
-  
-      if (!response.ok) {
-        throw new Error("Failed to send cart data");
-      }
-  
-      console.log("Cart data sent successfully");
-    } catch (error) {
-      console.error("Error sending cart data:", error);
+    }
+
+    if (!cartData.shops) {
+      setCartData((pre) => {
+        const temp = { ...pre };
+        temp.shops = [
+          {
+            shopID: selectedShop,
+            orderList: filterProducts,
+          },
+        ];
+        return temp;
+      });
+    } else {
+      setCartData((pre) => {
+        const temp = { ...pre };
+        temp.shops.push({
+          shopID: selectedShop,
+          orderList: filterProducts,
+        });
+        return temp;
+      });
     }
   };
-
-  
-  
-  
-  
 
   console.log(cartData);
   return (
