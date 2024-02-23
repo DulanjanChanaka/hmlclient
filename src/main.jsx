@@ -8,6 +8,7 @@ const HomeComponent = () => {
   const [products, setProducts] = useState([]);
   const [shopList, setShopList] = useState([]);
   const { cartData, setCartData } = useCartdata();
+  const [totalValue, setTotalValue] = useState(0);
 
   useEffect(() => {
     // Fetch product list from the API
@@ -49,83 +50,66 @@ const HomeComponent = () => {
     fetchShopList();
   }, []);
 
+  const calculateTotalValue = () => {
+    let total = 0;
+    products.forEach((product) => {
+      if (product.quantity && product.quantity > 0) {
+        total += product.whole * product.quantity;
+      }
+    });
+    return total;
+  };
+
   // send cart data
-  // const sendCartData = () => {
-  //   const filterProducts = products.filter((val) => val.checked === true);
-
-  //   if (!cartData.name) {
-  //     setCartData((pre) => {
-  //       const temp = { ...pre, name: username };
-  //       return temp;
-  //     });
-  //   }
-
-  //   if (!cartData.shops) {
-  //     setCartData((pre) => {
-  //       const temp = { ...pre };
-  //       temp.shops = [
-  //         {
-  //           shopID: selectedShop,
-  //           orderList: filterProducts,
-  //         },
-  //       ];
-  //       return temp;
-  //     });
-  //   } else {
-  //     setCartData((pre) => {
-  //       const temp = { ...pre };
-  //       temp.shops.push({
-  //         shopID: selectedShop,
-  //         orderList: filterProducts,
-  //       });
-  //       return temp;
-  //     });
-  //   }
-  // };
-
-
   const sendCartData = async () => {
     try {
       const filterProducts = products.filter((val) => val.quantity > 0);
-  
-      const quantities = filterProducts.map(({ _id,code, quantity }) => ({ productId: _id,code, quantity }));
-  
+
+      const quantities = filterProducts.map(({ _id, code, quantity }) => ({
+        productId: _id,
+        code,
+        quantity,
+      }));
+
       const requestBody = {
         code: selectedShop,
         description: username,
-        quantity: quantities
+        quantity: quantities,
       };
-  
+
       console.log(requestBody);
-  
-      const response = await fetch("https://caltexserver.netlify.app/api/orders", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(requestBody),
-      });
-  
+
+      const response = await fetch(
+        "https://caltexserver.netlify.app/api/orders",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(requestBody),
+        }
+      );
+
       if (!response.ok) {
         throw new Error("Failed to send cart data");
       }
-  
+
       console.log("Cart data sent successfully");
     } catch (error) {
       console.error("Error sending cart data:", error);
     }
   };
 
-  
-  
-  
-  
+  useEffect(() => {
+    setTotalValue(calculateTotalValue());
+  }, [products]);
 
   console.log(cartData);
   return (
     <div className="mx-5">
-      <h1>Shop</h1>
+      <h1 className="mt-3 font-bold text-lg">Select Shop</h1>
       <select
+      className=" border-2  border-slate-500 "
         onChange={(e) => {
           setSelectedShop(e.target.value);
         }}
@@ -136,28 +120,21 @@ const HomeComponent = () => {
           </option>
         ))}
       </select>
-      <h1>Select Products</h1>
+      <h1 className="mt-4  mb-2 font-bold text-lg">Select Products</h1>
       {products?.map((val, index) => (
         <div key={val._id} className="flex flex-row gap-3 pb-2">
           <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-            {/* {console.log(val._id)} */}
             <input
               readOnly
-              onChange={(e) => {
-                // setProducts((pre) => {
-                //   const temp = [...pre];
-                //   temp[index] = { ...temp[index], checked: e.target.checked };
-                //   return temp;
-                // });
-              }}
+              onChange={(e) => {}}
               type={"checkbox"}
               checked={val.checked || false}
             />
             <p>{val.code} </p>
           </div>
           <div>
-            {/* quantity */}
             <input
+           
               type={"number"}
               onChange={(e) => {
                 setProducts((pre) => {
@@ -170,12 +147,13 @@ const HomeComponent = () => {
                   return temp;
                 });
               }}
-              className="box-border border border-1 w-10"
+              className="box-border border border-1  border-slate-500 w-16 ml-2"
             ></input>
           </div>
         </div>
       ))}
-      <button onClick={sendCartData}>Send</button>
+      <div className="font-semibold text-lg mt-3">Total Value: {totalValue}</div>
+      <button onClick={sendCartData} className="bg-blue-600 py-2 px-8 rounded-lg font-semibold text-base text-white mt-4">Send</button>
     </div>
   );
 };

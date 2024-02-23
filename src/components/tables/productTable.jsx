@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { DataGrid } from '@mui/x-data-grid';
 
 const ProductTable= () => {
-  const [productList, setProductList] = useState([])
+//   const [productList, setProductList] = useState([])
   const [rows, setRows] = useState([])
 
   const columns = [
