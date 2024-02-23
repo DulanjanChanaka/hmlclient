@@ -1,12 +1,9 @@
-"use client";
 import signIn from "../firebase/auth/signin";
-
 import { useState } from "react";
 
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
 
   const handleForm = async (event) => {
     event.preventDefault();
@@ -16,23 +13,18 @@ function Login() {
     if (error) {
       return console.log(error);
     } else {
-      return router.push("/");
+      // Redirect to the home page after successful login
+      window.location.href = "/"; // Redirect to the home page
     }
 
     // else successful
     console.log(result);
   };
+
   return (
-    <div className="w-full  flex justify-center items-center">
-      <Image
-        src="/assets/bg1.jpg"
-        alt="amila"
-        width={924.45}
-        height={520}
-        className="bg-cover bg-center h-screen w-full flex items-centerl"
-      />
-      <div className="absolute top-0 w-full h-full flex flex-col items-center justify-center  ">
-        <div className="bg-white bg-opacity-40 p-4 rounded-xl">
+    <div className="pt-20">
+      <div >
+        <div >
           <h1 className=" text-center text-white font-bold">Login</h1>
           <form onSubmit={handleForm} className="flex flex-col gap-4">
             <label htmlFor="email">
@@ -66,12 +58,7 @@ function Login() {
               Sign In
             </button>
           </form>
-          <p className="text-white mt-4">
-          Don&apos;t have an account?{" "}
-            <a href="/signup" className="text-cyan-300">
-              Sign Up
-            </a>
-          </p>
+          
         </div>
       </div>
     </div>
